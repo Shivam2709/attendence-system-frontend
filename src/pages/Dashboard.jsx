@@ -9,9 +9,7 @@ const Dashboard = () => {
   const [editingId, setEditingId] = useState(null);
   const [editingTitle, setEditingTitle] = useState("");
 
-  // ========================
   // FETCH TASKS
-  // ========================
   const fetchTasks = useCallback(async () => {
     try {
       const { data } = await api.get("/tasks");
@@ -21,9 +19,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  // ========================
   // MARK ATTENDANCE
-  // ========================
   const markAttendance = async () => {
     try {
       const { data } = await api.post("/attendance");
@@ -33,9 +29,7 @@ const Dashboard = () => {
     }
   };
 
-  // ========================
   // CREATE TASK
-  // ========================
   const createTask = async () => {
     if (!title.trim()) {
       toast.error("Task title is required");
@@ -52,17 +46,13 @@ const Dashboard = () => {
     }
   };
 
-  // ========================
   // START EDIT
-  // ========================
   const startEdit = (task) => {
     setEditingId(task._id);
     setEditingTitle(task.title);
   };
 
-  // ========================
   // SAVE EDIT
-  // ========================
   const saveEdit = async (taskId) => {
     if (!editingTitle.trim()) {
       toast.error("Task title cannot be empty");
@@ -83,9 +73,7 @@ const Dashboard = () => {
     }
   };
 
-  // ========================
   // DELETE TASK
-  // ========================
   const deleteTask = async (taskId) => {
     const confirmDelete = window.confirm("Are you sure?");
     if (!confirmDelete) return;
@@ -99,9 +87,7 @@ const Dashboard = () => {
     }
   };
 
-  // ========================
   // TOGGLE STATUS
-  // ========================
   const toggleStatus = async (task) => {
     const newStatus = task.status === "pending" ? "completed" : "pending";
 
@@ -117,9 +103,7 @@ const Dashboard = () => {
     }
   };
 
-  // ========================
   // LOAD ON START
-  // ========================
   useEffect(() => {
     fetchTasks();
   }, []);
