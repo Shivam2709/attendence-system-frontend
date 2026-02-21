@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
-import { useCallback } from "react";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -9,79 +9,99 @@ const Dashboard = () => {
   const [editingId, setEditingId] = useState(null);
   const [editingTitle, setEditingTitle] = useState("");
 
+  // ========================
   // FETCH TASKS
-
+  // ========================
   const fetchTasks = useCallback(async () => {
     try {
       const { data } = await api.get("/tasks");
       setTasks(data);
     } catch (err) {
-      console.log(err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to load tasks");
     }
   }, []);
 
+  // ========================
   // MARK ATTENDANCE
-
+  // ========================
   const markAttendance = async () => {
     try {
       const { data } = await api.post("/attendance");
-      alert(data.message);
+      toast.success(data.message);
     } catch (err) {
-      alert(err.response?.data?.message);
+      toast.error(err.response?.data?.message || "Attendance failed");
     }
   };
 
+  // ========================
   // CREATE TASK
-
+  // ========================
   const createTask = async () => {
-    if (!title) return;
+    if (!title.trim()) {
+      toast.error("Task title is required");
+      return;
+    }
 
     try {
       await api.post("/tasks", { title });
+      toast.success("Task created successfully");
       setTitle("");
       fetchTasks();
     } catch (err) {
-      console.log(err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to create task");
     }
   };
 
+  // ========================
   // START EDIT
-
+  // ========================
   const startEdit = (task) => {
     setEditingId(task._id);
     setEditingTitle(task.title);
   };
 
+  // ========================
   // SAVE EDIT
-
+  // ========================
   const saveEdit = async (taskId) => {
+    if (!editingTitle.trim()) {
+      toast.error("Task title cannot be empty");
+      return;
+    }
+
     try {
       await api.put(`/tasks/${taskId}`, {
         title: editingTitle,
       });
 
+      toast.success("Task updated successfully");
       setEditingId(null);
       setEditingTitle("");
       fetchTasks();
     } catch (err) {
-      console.log(err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to update task");
     }
   };
 
+  // ========================
   // DELETE TASK
+  // ========================
   const deleteTask = async (taskId) => {
     const confirmDelete = window.confirm("Are you sure?");
     if (!confirmDelete) return;
 
     try {
       await api.delete(`/tasks/${taskId}`);
+      toast.success("Task deleted successfully");
       fetchTasks();
     } catch (err) {
-      console.log(err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to delete task");
     }
   };
 
+  // ========================
   // TOGGLE STATUS
+  // ========================
   const toggleStatus = async (task) => {
     const newStatus = task.status === "pending" ? "completed" : "pending";
 
@@ -90,13 +110,16 @@ const Dashboard = () => {
         status: newStatus,
       });
 
+      toast.success("Task status updated");
       fetchTasks();
     } catch (err) {
-      console.log(err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to update status");
     }
   };
 
+  // ========================
   // LOAD ON START
+  // ========================
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -170,7 +193,6 @@ const Dashboard = () => {
             </div>
 
             <div className="flex gap-2 ml-4">
-              {/* Toggle */}
               <button
                 onClick={() => toggleStatus(task)}
                 className="bg-gray-800 text-white px-3 py-1 rounded"
@@ -178,7 +200,6 @@ const Dashboard = () => {
                 Toggle
               </button>
 
-              {/* Edit */}
               {editingId === task._id ? (
                 <button
                   onClick={() => saveEdit(task._id)}
@@ -195,7 +216,6 @@ const Dashboard = () => {
                 </button>
               )}
 
-              {/* Delete */}
               <button
                 onClick={() => deleteTask(task._id)}
                 className="bg-red-600 text-white px-3 py-1 rounded"
