@@ -1,4 +1,4 @@
-# 📌 Mini Attendance + Task Management System
+# 📌 Mini Attendance + Task Management System (Role-Based)
 
 A full-stack web application built using **Node.js, Express, MongoDB Atlas, and React (Vite + Tailwind CSS)**.
 
@@ -7,7 +7,11 @@ This system allows users to:
 - 🔐 Signup & Login with JWT authentication
 - 🗓 Mark attendance (only once per day)
 - 📝 Create, update, toggle, and delete tasks
+- 👑 Role-based access control (User & Admin)
+- 📊 Admin can view all present employees (today)
 - 🔒 Securely manage user-specific data
+
+---
 
 # 🚀 Live Demo
 
@@ -16,6 +20,8 @@ https://attendence-system-eflo.onrender.com
 
 🔗 Frontend App:  
 https://attendence-system-frontend-jade.vercel.app
+
+---
 
 # 🛠 Tech Stack
 
@@ -37,7 +43,29 @@ https://attendence-system-frontend-jade.vercel.app
 - Axios
 - React Router DOM
 - React Hot Toast
+- Context API (Auth State)
 - Vercel (Deployment)
+
+---
+
+# 🔐 Role-Based Access Control (RBAC)
+
+The system supports two roles:
+
+| Role  | Permissions                        |
+| ----- | ---------------------------------- |
+| user  | Mark attendance, manage own tasks  |
+| admin | View all today's present employees |
+
+### 🔑 How It Works
+
+- Role is stored in the User schema
+- Role is embedded in JWT payload
+- Backend middleware verifies role
+- Frontend conditionally renders UI based on role
+- Admin routes are protected at both backend and frontend level
+
+---
 
 # 🗄 Database Schema (MongoDB)
 
@@ -49,10 +77,13 @@ https://attendence-system-frontend-jade.vercel.app
   "name": "String",
   "email": "String (unique)",
   "password": "String (hashed)",
+  "role": "user | admin",
   "createdAt": "Date",
   "updatedAt": "Date"
 }
 ```
+
+---
 
 ## 📦 Attendance Collection
 
@@ -64,11 +95,16 @@ https://attendence-system-frontend-jade.vercel.app
 }
 ```
 
-### Unique Index
+### Unique Index (Prevents Duplicate Attendance)
 
 ```js
 attendanceSchema.index({ user: 1, attendance_date: 1 }, { unique: true });
 ```
+
+Ensures:
+1 user + 1 date = 1 attendance record
+
+---
 
 ## 📦 Tasks Collection
 
@@ -85,6 +121,8 @@ attendanceSchema.index({ user: 1, attendance_date: 1 }, { unique: true });
 }
 ```
 
+---
+
 # 📡 API Endpoints
 
 ## 🔐 Auth Routes
@@ -94,11 +132,24 @@ attendanceSchema.index({ user: 1, attendance_date: 1 }, { unique: true });
 | POST   | /api/auth/signup | Register user |
 | POST   | /api/auth/login  | Login user    |
 
+JWT Payload:
+
+```json
+{
+  "id": "userId",
+  "role": "user | admin"
+}
+```
+
+---
+
 ## 🗓 Attendance Routes
 
-| Method | Endpoint        | Description     |
-| ------ | --------------- | --------------- |
-| POST   | /api/attendance | Mark attendance |
+| Method | Endpoint        | Description                    |
+| ------ | --------------- | ------------------------------ |
+| POST   | /api/attendance | Mark attendance (once per day) |
+
+---
 
 ## 📝 Task Routes
 
@@ -109,7 +160,24 @@ attendanceSchema.index({ user: 1, attendance_date: 1 }, { unique: true });
 | PUT    | /api/tasks/:id | Update task    |
 | DELETE | /api/tasks/:id | Delete task    |
 
+---
+
+## 👑 Admin Routes
+
+| Method | Endpoint                    | Description                             |
+| ------ | --------------------------- | --------------------------------------- |
+| GET    | /api/admin/attendance/today | View all present employees (Admin only) |
+
+Protected by:
+
+- JWT Authentication Middleware
+- Admin Role Middleware
+
+---
+
 # 🔑 Environment Variables
+
+Create a `.env` file inside backend:
 
 ```env
 PORT=5000
@@ -118,6 +186,10 @@ JWT_SECRET=your_secret_key
 JWT_EXPIRE=1d
 NODE_ENV=production
 ```
+
+No credentials are hardcoded.
+
+---
 
 # 🧪 Local Setup
 
@@ -129,6 +201,11 @@ npm install
 npm run dev
 ```
 
+Server runs at:
+http://localhost:5000
+
+---
+
 ## Frontend
 
 ```bash
@@ -137,25 +214,78 @@ npm install
 npm run dev
 ```
 
+Frontend runs at:
+http://localhost:5173
+
+---
+
+# 🚀 Deployment
+
+## Backend (Render)
+
+1. Push backend to GitHub
+2. Connect repository in Render
+3. Add environment variables
+4. Deploy
+
+## Frontend (Vercel)
+
+1. Push frontend to GitHub
+2. Import project in Vercel
+3. Set backend API URL
+4. Deploy
+
+---
+
 # 🛡 Security Measures
 
 - Password hashing using bcrypt
-- JWT authentication
+- JWT-based authentication
+- Role-based authorization
 - Protected routes middleware
 - MongoDB unique indexes
 - No plain text passwords
 - No hardcoded credentials
-- Environment variables used
-- API request logging using Morgan
+- Environment variables for sensitive data
+- API logging with Morgan
+
+---
+
+# 📊 Evaluation Criteria Covered
+
+✔ Clean API structure  
+✔ Secure authentication  
+✔ Role-based authorization  
+✔ Proper database schema design  
+✔ Cloud deployment  
+✔ Code quality & modular architecture  
+✔ No hardcoded credentials  
+✔ No plain text passwords
+
+---
+
+# 📌 Future Improvements
+
+- Attendance history filter by date
+- Pagination for admin view
+- User management panel
+- Refresh token implementation
+- Dashboard analytics
+
+---
 
 # 👨‍💻 Author
 
 Shivam Thakur  
 GitHub: https://github.com/Shivam2709
 
+---
+
 # ⭐ Project Status
 
 ✅ Backend Deployed  
 ✅ Frontend Deployed  
-✅ Secure Implementation  
+✅ JWT Authentication  
+✅ Role-Based Access Control  
+✅ Admin Panel Implemented  
 ✅ Production-Ready Structure
