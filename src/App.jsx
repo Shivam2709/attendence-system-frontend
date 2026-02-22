@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
+import AdminRoute from "./components/AdminRoute";
+import AdminAttendance from "./pages/AdminAttendance";
 
 function App() {
   return (
@@ -20,6 +22,14 @@ function App() {
               <PrivateRoute>
                 <Dashboard />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminAttendance />
+              </AdminRoute>
             }
           />
         </Routes>

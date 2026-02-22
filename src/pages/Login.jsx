@@ -28,7 +28,10 @@ const Login = () => {
 
       const { data } = await api.post("/auth/login", form);
 
-      login(data.token);
+      login(data.token, data.role);
+
+      console.log("Login user object:", data);
+      console.log("Role before sending:", data.role);
 
       toast.success("Login successful 🎉");
 
