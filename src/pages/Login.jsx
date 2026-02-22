@@ -30,9 +30,6 @@ const Login = () => {
 
       login(data.token, data.role);
 
-      console.log("Login user object:", data);
-      console.log("Role before sending:", data.role);
-
       toast.success("Login successful 🎉");
 
       navigate("/dashboard");
