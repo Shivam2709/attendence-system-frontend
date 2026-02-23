@@ -250,30 +250,6 @@ http://localhost:5173
 - API logging with Morgan
 
 ---
-
-# 📊 Evaluation Criteria Covered
-
-✔ Clean API structure  
-✔ Secure authentication  
-✔ Role-based authorization  
-✔ Proper database schema design  
-✔ Cloud deployment  
-✔ Code quality & modular architecture  
-✔ No hardcoded credentials  
-✔ No plain text passwords
-
----
-
-# 📌 Future Improvements
-
-- Attendance history filter by date
-- Pagination for admin view
-- User management panel
-- Refresh token implementation
-- Dashboard analytics
-
----
-
 # 👨‍💻 Author
 
 Shivam Thakur  
